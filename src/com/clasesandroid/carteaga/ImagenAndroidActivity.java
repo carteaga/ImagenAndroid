@@ -65,7 +65,7 @@ class ImageDownloads extends AsyncTask<ImageView, Void, Bitmap> {
 			is.close();
 		} catch (Exception e) {
 			// TODO: handle exception
-			Log.e(ImageDownloads.class.getName(), e.getMessage());
+			 Log.e(ImageDownloads.class.getName(), e.getMessage());
 		}
 		return bm;
 		
