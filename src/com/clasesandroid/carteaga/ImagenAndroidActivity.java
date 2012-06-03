@@ -21,13 +21,19 @@ public class ImagenAndroidActivity extends Activity {
         setContentView(R.layout.main);
         
         ImageView image = (ImageView) findViewById(R.id.img_1);
-        //String URL = Image.images[1];
+        String URL = Image.images[0];
+        Log.i("adads", Image.images[0]);
+        image.setTag(URL);
         
-        /*
-         * Los tag es algo que identifica cierta no sé xD
-         * 
-         */
-        //image.setTag(URL);
+        new ImageDownloads().execute(image);
+        
+        image = (ImageView) findViewById(R.id.img_2);
+        URL = Image.images[1];
+        Log.i("adads", Image.images[0]);
+        image.setTag(URL);
+        
+        new ImageDownloads().execute(image);
+        
         
     }
     
@@ -45,14 +51,27 @@ class ImageDownloads extends AsyncTask<ImageView, Void, Bitmap> {
 	private Bitmap bm;
 	
 	@Override
-	protected Bitmap doInBackground(ImageView... imageView) {
+	protected Bitmap doInBackground(ImageView... imageViews) {
 		// TODO Auto-generated method stub
-		//this.imageView = imagesViews[0];
-		this.imageView = imageView[0];
-		
-		return null;
+		this.imageView = imageViews[0];
+	
+		return download_Image((String) imageView.getTag());
 	}
 	
+	@Override
+	protected void onPostExecute(Bitmap result) {
+		// TODO Auto-generated method stub
+		super.onPostExecute(result);
+		
+		imageView.setImageBitmap(result);
+	}
+
+	@Override
+	protected void onPreExecute() {
+		// TODO Auto-generated method stub
+		super.onPreExecute();
+	}
+
 	private Bitmap download_Image(String url){
 		try{
 			URL aURl = new URL(url);
