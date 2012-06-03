@@ -152,20 +152,22 @@ public class ImagenAndroidActivity extends Activity {
 		Integer stop;
 		btn_forward.setEnabled(true);
 		if(pos_url > 5){
-			stop = pos_url - 5;
+			stop = pos_url;
+			pos_url = pos_url - 5;
 			btn_back.setEnabled(true);
 		}else{
-			stop = 0;
+			pos_url = 0;
+			stop = 5;
 			btn_back.setEnabled(false);
 		}
 		
-		for (int j = 0; pos_url > stop; j++) {
+		for (int j = 0; pos_url < stop; j++) {
 			String URL = Image.images[pos_url];
 			Log.i("asdasd", ""+pos_url);
 			Log.i("carga", URL);
 			imageViews[j].setTag(URL);
 			new ImageDownloads().execute(imageViews[j]);
-			pos_url--;
+			pos_url++;
 		}
 	}
 	
