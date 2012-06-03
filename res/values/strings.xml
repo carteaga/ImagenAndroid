@@ -3,5 +3,6 @@
 
     <string name="hello">Hello World, ImagenAndroidActivity!</string>
     <string name="app_name">ImagenAndroid</string>
+    <string name="desc">Imagen</string>
 
 </resources>
