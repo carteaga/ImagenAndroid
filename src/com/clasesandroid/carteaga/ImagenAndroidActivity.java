@@ -22,6 +22,7 @@ public class ImagenAndroidActivity extends Activity {
 	private ImageView[] imageViews;
 	private Button btn_forward, btn_back;
 	private ImageView imagePreview;
+	private Integer image_select;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -56,24 +57,6 @@ public class ImagenAndroidActivity extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				back();
-			}
-		});
-		// función para el preview
-		imageViews[0].setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				imagePreview.setImageDrawable(imageViews[0].getDrawable());
-			}
-		});
-
-		imageViews[0].setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				imagePreview.setImageDrawable(imageViews[0].getDrawable());
 			}
 		});
 
@@ -189,7 +172,6 @@ class ImageDownloads extends AsyncTask<ImageView, Void, Bitmap> {
 	protected Bitmap doInBackground(ImageView... imageViews) {
 		// TODO Auto-generated method stub
 		this.imageView = imageViews[0];
-
 		return download_Image((String) imageView.getTag());
 	}
 
@@ -197,7 +179,6 @@ class ImageDownloads extends AsyncTask<ImageView, Void, Bitmap> {
 	protected void onPostExecute(Bitmap result) {
 		// TODO Auto-generated method stub
 		super.onPostExecute(result);
-
 		imageView.setImageBitmap(result);
 	}
 
@@ -222,6 +203,5 @@ class ImageDownloads extends AsyncTask<ImageView, Void, Bitmap> {
 			Log.e(ImageDownloads.class.getName(), e.getMessage());
 		}
 		return bm;
-
 	}
 }
