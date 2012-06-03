@@ -11,58 +11,186 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 
 public class ImagenAndroidActivity extends Activity {
-    /** Called when the activity is first created. */
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
-        
-        ImageView image = (ImageView) findViewById(R.id.img_1);
-        String URL = Image.images[0];
-        Log.i("adads", Image.images[0]);
-        image.setTag(URL);
-        
-        new ImageDownloads().execute(image);
-        
-        image = (ImageView) findViewById(R.id.img_2);
-        URL = Image.images[1];
-        Log.i("adads", Image.images[0]);
-        image.setTag(URL);
-        
-        new ImageDownloads().execute(image);
-        
-        
-    }
-    
-}
+	/** Called when the activity is first created. */
 
+	private Integer pos_url = 0; // maneja en que url posición de url va
+	private ImageView[] imageViews;
+	private Button btn_forward, btn_back;
+	private ImageView imagePreview;
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.main);
+
+		imageViews = new ImageView[] { (ImageView) findViewById(R.id.img_1),
+				(ImageView) findViewById(R.id.img_2),
+				(ImageView) findViewById(R.id.img_3),
+				(ImageView) findViewById(R.id.img_4),
+				(ImageView) findViewById(R.id.img_5) };
+		btn_forward = (Button) findViewById(R.id.btn_adv);
+		btn_back = (Button) findViewById(R.id.btn_back);
+		imagePreview = (ImageView) findViewById(R.id.img_preview);
+
+		
+		forward();
+		btn_back.setEnabled(false);
+		
+		btn_forward.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				forward();
+			}
+		});
+		
+		btn_back.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				back();
+			}
+		});
+		// función para el preview
+		imageViews[0].setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				imagePreview.setImageDrawable(imageViews[0].getDrawable());
+			}
+		});
+
+		imageViews[0].setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				imagePreview.setImageDrawable(imageViews[0].getDrawable());
+			}
+		});
+
+		imageViews[0].setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				imagePreview.setImageDrawable(imageViews[0].getDrawable());
+			}
+		});
+
+		imageViews[1].setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				imagePreview.setImageDrawable(imageViews[1].getDrawable());
+			}
+		});
+
+		imageViews[2].setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				imagePreview.setImageDrawable(imageViews[2].getDrawable());
+			}
+		});
+
+		imageViews[3].setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				imagePreview.setImageDrawable(imageViews[3].getDrawable());
+			}
+		});
+
+		imageViews[4].setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				imagePreview.setImageDrawable(imageViews[4].getDrawable());
+			}
+		});
+
+	}
+
+	private void forward() {
+		Integer img_load = Image.images.length - pos_url;
+		Integer stop;
+		btn_back.setEnabled(true);
+		if (img_load > 5) {
+			stop = pos_url + 5;
+			btn_forward.setEnabled(true);
+		} else {
+			stop = (pos_url + img_load);
+			btn_forward.setEnabled(false);
+		}
+		
+		for (int j = 0; pos_url < stop; j++) {
+			String URL = Image.images[pos_url];
+			Log.i("carga", URL);
+			imageViews[j].setTag(URL);
+			new ImageDownloads().execute(imageViews[j]);
+			pos_url++;
+		}
+	}
+
+	private void back() {
+		pos_url = pos_url - 5;
+		Integer stop;
+		btn_forward.setEnabled(true);
+		if(pos_url > 5){
+			stop = pos_url - 5;
+			btn_back.setEnabled(true);
+		}else{
+			stop = 0;
+			btn_back.setEnabled(false);
+		}
+		
+		for (int j = 0; pos_url > stop; j++) {
+			String URL = Image.images[pos_url];
+			Log.i("asdasd", ""+pos_url);
+			Log.i("carga", URL);
+			imageViews[j].setTag(URL);
+			new ImageDownloads().execute(imageViews[j]);
+			pos_url--;
+		}
+	}
+}
 
 /**
  * 
  * @author smeild
- *
+ * 
  */
 class ImageDownloads extends AsyncTask<ImageView, Void, Bitmap> {
-	
+
 	ImageView imageView = null;
 	private Bitmap bm;
-	
+
 	@Override
 	protected Bitmap doInBackground(ImageView... imageViews) {
 		// TODO Auto-generated method stub
 		this.imageView = imageViews[0];
-	
+
 		return download_Image((String) imageView.getTag());
 	}
-	
+
 	@Override
 	protected void onPostExecute(Bitmap result) {
 		// TODO Auto-generated method stub
 		super.onPostExecute(result);
-		
+
 		imageView.setImageBitmap(result);
 	}
 
@@ -72,8 +200,8 @@ class ImageDownloads extends AsyncTask<ImageView, Void, Bitmap> {
 		super.onPreExecute();
 	}
 
-	private Bitmap download_Image(String url){
-		try{
+	private Bitmap download_Image(String url) {
+		try {
 			URL aURl = new URL(url);
 			URLConnection conn = aURl.openConnection();
 			conn.connect();
@@ -84,9 +212,9 @@ class ImageDownloads extends AsyncTask<ImageView, Void, Bitmap> {
 			is.close();
 		} catch (Exception e) {
 			// TODO: handle exception
-			 Log.e(ImageDownloads.class.getName(), e.getMessage());
+			Log.e(ImageDownloads.class.getName(), e.getMessage());
 		}
 		return bm;
-		
+
 	}
 }
