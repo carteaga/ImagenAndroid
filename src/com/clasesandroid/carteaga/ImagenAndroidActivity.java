@@ -125,43 +125,40 @@ public class ImagenAndroidActivity extends Activity {
 	}
 
 	private void forward() {
-		setIcon();
 		Integer img_load = Image.images.length - pos_url;
 		Integer stop;
 		btn_back.setEnabled(true);
 		if (img_load > 5) {
 			stop = pos_url + 5;
+			load_image(stop);
 			btn_forward.setEnabled(true);
 		} else {
 			stop = (pos_url + img_load);
+			load_image(stop);
 			btn_forward.setEnabled(false);
-		}
-		
-		for (int j = 0; pos_url < stop; j++) {
-			String URL = Image.images[pos_url];
-			Log.i("carga", URL);
-			imageViews[j].setTag(URL);
-			new ImageDownloads().execute(imageViews[j]);
-			pos_url++;
 		}
 	}
 
 	private void back() {
-		setIcon();
 		pos_url = pos_url - 5;
 		Integer stop;
 		btn_forward.setEnabled(true);
 		if(pos_url > 5){
 			stop = pos_url;
 			pos_url = pos_url - 5;
+			load_image(stop);
 			btn_back.setEnabled(true);
 		}else{
 			pos_url = 0;
 			stop = 5;
+			load_image(stop);
 			btn_back.setEnabled(false);
 		}
-		
-		for (int j = 0; pos_url < stop; j++) {
+	}
+	
+	private void load_image(Integer end){
+		setIconDefault();
+		for (int j = 0; pos_url < end; j++) {
 			String URL = Image.images[pos_url];
 			Log.i("asdasd", ""+pos_url);
 			Log.i("carga", URL);
@@ -171,7 +168,7 @@ public class ImagenAndroidActivity extends Activity {
 		}
 	}
 	
-	private void setIcon(){
+	private void setIconDefault(){
 		for(int i=0; i<5; i++){
 			imageViews[i].setImageResource(R.drawable.ic_launcher);
 		}
