@@ -125,6 +125,7 @@ public class ImagenAndroidActivity extends Activity {
 	}
 
 	private void forward() {
+		setIcon();
 		Integer img_load = Image.images.length - pos_url;
 		Integer stop;
 		btn_back.setEnabled(true);
@@ -146,6 +147,7 @@ public class ImagenAndroidActivity extends Activity {
 	}
 
 	private void back() {
+		setIcon();
 		pos_url = pos_url - 5;
 		Integer stop;
 		btn_forward.setEnabled(true);
@@ -164,6 +166,12 @@ public class ImagenAndroidActivity extends Activity {
 			imageViews[j].setTag(URL);
 			new ImageDownloads().execute(imageViews[j]);
 			pos_url--;
+		}
+	}
+	
+	private void setIcon(){
+		for(int i=0; i<5; i++){
+			imageViews[i].setImageResource(R.drawable.ic_launcher);
 		}
 	}
 }
