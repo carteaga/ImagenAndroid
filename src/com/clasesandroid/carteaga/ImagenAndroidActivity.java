@@ -2,30 +2,33 @@ package com.clasesandroid.carteaga;
 
 import java.io.BufferedInputStream;
 import java.io.InputStream;
+
 import java.net.URL;
 import java.net.URLConnection;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+
 
 public class ImagenAndroidActivity extends Activity {
 	/** Called when the activity is first created. */
 
-	private Integer pos_url = 0; // maneja en que url posición de url va
+	private Integer pos_url = 0; // maneja la posición del array de url
 	private ImageView[] imageViews;
 	private Button btn_forward, btn_back;
 	private ImageView imagePreview;
-	private Integer image_select;
-
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+ 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 
@@ -37,8 +40,8 @@ public class ImagenAndroidActivity extends Activity {
 		btn_forward = (Button) findViewById(R.id.btn_adv);
 		btn_back = (Button) findViewById(R.id.btn_back);
 		imagePreview = (ImageView) findViewById(R.id.img_preview);
-
 		
+		/*Carga las 5 primera y pone el btn para retrocer bloqueado*/
 		forward();
 		btn_back.setEnabled(false);
 		
@@ -59,7 +62,8 @@ public class ImagenAndroidActivity extends Activity {
 				back();
 			}
 		});
-
+		
+		/* Si el usuario presiona una imagen, ésta pasara a la preview*/
 		imageViews[0].setOnClickListener(new View.OnClickListener() {
 
 			@Override
@@ -106,7 +110,11 @@ public class ImagenAndroidActivity extends Activity {
 		});
 
 	}
-
+	
+	/*
+	 * Carga las 5 imagenes siguientes
+	 * setea el pos_url y end.
+	 */
 	private void forward() {
 		Integer img_load = Image.images.length - pos_url;
 		Integer stop;
@@ -121,7 +129,11 @@ public class ImagenAndroidActivity extends Activity {
 			btn_forward.setEnabled(false);
 		}
 	}
-
+	
+	/*
+	 * Carga las 5 imagenes anteriores.
+	 * setea el pos_url y end.
+	 */
 	private void back() {
 		pos_url = pos_url - 5;
 		Integer stop;
@@ -139,18 +151,23 @@ public class ImagenAndroidActivity extends Activity {
 		}
 	}
 	
+	/*
+	 * Encargado de ejecutar los hilos.
+	 * recibe end con la última imagen que debe cargar.
+	 */
 	private void load_image(Integer end){
 		setIconDefault();
 		for (int j = 0; pos_url < end; j++) {
 			String URL = Image.images[pos_url];
-			Log.i("asdasd", ""+pos_url);
-			Log.i("carga", URL);
 			imageViews[j].setTag(URL);
-			new ImageDownloads().execute(imageViews[j]);
+			new ImageDownloads(this).execute(imageViews[j]);
 			pos_url++;
 		}
 	}
 	
+	/*
+	 * setea las 5 imagenes con el icono predeterminado de Android
+	 */
 	private void setIconDefault(){
 		for(int i=0; i<5; i++){
 			imageViews[i].setImageResource(R.drawable.ic_launcher);
@@ -161,13 +178,20 @@ public class ImagenAndroidActivity extends Activity {
 /**
  * 
  * @author smeild
+ * Hilo que carga una imagen de internet
  * 
  */
 class ImageDownloads extends AsyncTask<ImageView, Void, Bitmap> {
 
 	ImageView imageView = null;
-	private Bitmap bm;
-
+	private Bitmap bm;	
+	private ImagenAndroidActivity contextImageDownload = null;
+	private ProgressBar probar = null;
+	
+	public ImageDownloads(ImagenAndroidActivity context){
+		contextImageDownload = context; //con el contexto puedo acceder al xml
+	}
+	
 	@Override
 	protected Bitmap doInBackground(ImageView... imageViews) {
 		// TODO Auto-generated method stub
@@ -180,11 +204,15 @@ class ImageDownloads extends AsyncTask<ImageView, Void, Bitmap> {
 		// TODO Auto-generated method stub
 		super.onPostExecute(result);
 		imageView.setImageBitmap(result);
+		probar.setVisibility(View.INVISIBLE);
 	}
 
 	@Override
 	protected void onPreExecute() {
 		// TODO Auto-generated method stub
+		probar = (ProgressBar)
+			contextImageDownload.findViewById(R.id.progressBar_img);
+		probar.setVisibility(View.VISIBLE);
 		super.onPreExecute();
 	}
 
@@ -201,7 +229,7 @@ class ImageDownloads extends AsyncTask<ImageView, Void, Bitmap> {
 		} catch (Exception e) {
 			// TODO: handle exception
 			Log.e(ImageDownloads.class.getName(), e.getMessage());
-		}
+		} 
 		return bm;
 	}
 }
